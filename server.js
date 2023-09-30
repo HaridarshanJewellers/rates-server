@@ -3,7 +3,7 @@ const cors = require("cors");
 const express = require("express");
 
 let app = express();
-app.use(cors());
+app.use(cors({ origin: "*" }));
 
 const axios = function (url) {
   return new Promise((resolve, reject) => {
