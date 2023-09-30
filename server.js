@@ -3,7 +3,18 @@ const cors = require("cors");
 const express = require("express");
 
 let app = express();
-app.use(cors({ origin: "*" }));
+
+const corsOptions = {
+  origin: "http://127.0.0.1:5500/index.html",
+};
+
+app.use(async (req, res, next) => {
+  await next();
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "http://127.0.0.1:5500/index.html"
+  );
+});
 
 const axios = function (url) {
   return new Promise((resolve, reject) => {
@@ -57,19 +68,50 @@ const _goldDigger = async function () {
     throw err;
   }
 };
+const _silverDigger = async function () {
+  try {
+    const date = Date.now();
+    const response = await axios(
+      "http://bcast.rakshabullion.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/raksha?_=" +
+        date
+    );
+
+    let silver = 0;
+    // For gold
+    response.split("\n").map((line) => {
+      const columns = line
+        .split("\t")
+        .map((col) => col.trim())
+        .filter((col) => !!col);
+
+      if (columns[1] === "SILVER") {
+        silver = parseInt(columns[3]);
+      }
+    });
+
+    return silver;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
 
 const server = http.createServer(async (req, res) => {
   if (req.method === "GET" && req.url === "/get-gold") {
     try {
       const goldValue = await _goldDigger();
+      const silverValue = await _silverDigger();
       res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end(JSON.stringify({ goldValue }));
+
+      res.end(JSON.stringify({ goldValue, silverValue }));
     } catch (err) {
       res.writeHead(500, { "Content-Type": "text/plain" });
+
       res.end("Internal Server Error");
     }
   } else {
     res.writeHead(404, { "Content-Type": "text/plain" });
+
     res.end("Not Found");
   }
 });
