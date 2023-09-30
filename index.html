@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.8.10/themes/smoothness/jquery-ui.css" type="text/css">
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.ui/1.8.10/jquery-ui.min.js"></script>
+    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> -->
+    <title>Gold Price Viewer</title>
+</head>
+
+<body>
+    <div>
+        <h1>Gold Price</h1>
+        <p id="goldPrice"></p>
+        <p id="twentyTwoCaratPrice"></p>
+    </div>
+
+    <script>
+
+        const apiUrl = 'https://clumsy-swimsuit-crab.cyclic.cloud/get-gold';
+        let goldData = null;
+        let twentyTwoCaratPrice = null;
+
+        function getGoldData() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    goldData = data.goldValue;
+                    updateGoldPrice();
+                })
+                .catch(error => {
+                    console.error('Error fetching gold data:', error);
+                });
+        }
+
+        function caratParser(rate) {
+            twentyTwoCaratPrice = (rate * 96) / 100;
+        }
+
+        function updateGoldPrice() {
+            if (goldData !== null) {
+                document.getElementById('goldPrice').textContent = `Gold Price: ${goldData}`;
+                caratParser(goldData);
+                document.getElementById('twentyTwoCaratPrice').textContent = `22 Carat Price: ${twentyTwoCaratPrice}`;
+            }
+        }
+
+        // Fetch gold data initially and then at a 5-second interval
+        getGoldData();
+        setInterval(getGoldData, 5000);
+    </script>
+</body>
+
+</html>

@@ -1,4 +1,7 @@
 const http = require("http");
+const cors = require("cors");
+
+app.use(cors());
 
 const axios = function (url) {
   return new Promise((resolve, reject) => {
