@@ -3,10 +3,11 @@ const cors = require("cors");
 const express = require("express");
 
 let app = express();
-app.use(cors({ origin: "*" }));
-
-
-app.use(cors({ origin: "https://haridarshanjewellers.github.io/rate" }));
+app.UseCors(x => x
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(origin => true) // allow any origin
+                    .AllowCredentials()); // allow credentials
 
 
 const axios = function (url) {
