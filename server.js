@@ -41,7 +41,7 @@ const _goldDigger = async function () {
   try {
     const date = Date.now();
     const response = await axios(
-      "http://bcast.kakagold.in:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/kaka?_=" +
+      "http://bcast.rakshabullion.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/raksha?_=" +
         date
     );
 
@@ -54,7 +54,7 @@ const _goldDigger = async function () {
         .map((col) => col.trim())
         .filter((col) => !!col);
 
-      if (columns[1] === "GOLD 999 IMP WITH GST") {
+      if (columns[1] === "GOLD 999 WITH GST") {
         gold = parseInt(columns[3]);
       }
     });
